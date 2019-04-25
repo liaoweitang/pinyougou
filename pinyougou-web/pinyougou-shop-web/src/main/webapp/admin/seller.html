@@ -11,10 +11,19 @@
     <link rel="stylesheet" href="/css/style.css"/>
 	<script src="/plugins/jQuery/jquery-2.2.3.min.js"></script>
     <script src="/plugins/bootstrap/js/bootstrap.min.js"></script>
-   
+
+	<script src="/plugins/angularjs/angular.min.js"></script>
+	<script src="/js/base.js"></script>
+	<script src="/js/service/baseService.js"></script>
+	<script src="/js/controller/baseController.js"></script>
+	<script src="/js/controller/sellerController.js"></script>
+
 </head>
 
-<body class="hold-transition skin-red sidebar-mini">
+<body class="hold-transition skin-red sidebar-mini"
+ng-app="pinyougou"
+ng-controller="sellerController"
+ng-init="find();">
 
 	<!-- 正文区域 -->
 	<section class="content">
@@ -39,82 +48,82 @@
 
 							<div class="col-md-2 title">公司名称</div>
 							<div class="col-md-10 data">
-								<input type="text" class="form-control"   placeholder="公司名称" value="">
+								<input type="text" class="form-control"   placeholder="公司名称" ng-model="seller.name">
 							</div>
-							
+
 							<div class="col-md-2 title">公司手机</div>
 							<div class="col-md-10 data">
-								<input type="text" class="form-control"  placeholder="公司手机" value="">
+								<input type="text" class="form-control"  placeholder="公司手机" ng-model="seller.mobile">
 							</div>
-							
+
 							<div class="col-md-2 title">公司电话</div>
 							<div class="col-md-10 data">
-								<input type="text" class="form-control"    placeholder="公司电话" value="">
+								<input type="text" class="form-control"    placeholder="公司电话" ng-model="seller.telephone">
 							</div>
-							
+
 							<div class="col-md-2 title">公司详细地址</div>
 							<div class="col-md-10 data">
-								<input type="text" class="form-control"    placeholder="公司详细地址" value="">
+								<input type="text" class="form-control"    placeholder="公司详细地址" ng-model="seller.addressDetail">
 							</div>
-							
+
 							<div class="col-md-2 title">联系人姓名</div>
 							<div class="col-md-10 data">
-								<input type="text" class="form-control"   placeholder="联系人姓名" value="">
+								<input type="text" class="form-control"   placeholder="联系人姓名" ng-model="seller.linkmanName">
 							</div>
-							
+
 							<div class="col-md-2 title">联系人QQ</div>
 							<div class="col-md-10 data">
-								<input type="text" class="form-control"   placeholder="联系人QQ" value="">
+								<input type="text" class="form-control"   placeholder="联系人QQ" ng-model="seller.linkmanQq">
 							</div>
-							
+
 							<div class="col-md-2 title">联系人手机</div>
 							<div class="col-md-10 data">
-								<input type="text" class="form-control"    placeholder="联系人手机" value="">
+								<input type="text" class="form-control"    placeholder="联系人手机" ng-model="seller.linkmanMobile">
 							</div>
-							
+
 							<div class="col-md-2 title">联系人EMAIL</div>
 							<div class="col-md-10 data">
-								<input type="text" class="form-control"   placeholder="联系人EMAIL" value="">
+								<input type="text" class="form-control"   placeholder="联系人EMAIL" ng-model="seller.linkmanEmail">
 							</div>
-							
+
 							<div class="col-md-2 title">营业执照号</div>
 							<div class="col-md-10 data">
-								<input type="text" class="form-control"   placeholder="营业执照号" value="">
+								<input type="text" class="form-control"   placeholder="营业执照号" ng-model="seller.licenseNumber">
 							</div>
-							 
+
 							<div class="col-md-2 title">税务登记证号</div>
 							<div class="col-md-10 data">
-								<input type="text" class="form-control"   placeholder="税务登记证号" value="">
+								<input type="text" class="form-control"   placeholder="税务登记证号" ng-model="seller.taxNumber">
 							</div>
-							
+
 							<div class="col-md-2 title">组织机构代码证</div>
 							<div class="col-md-10 data">
-								<input type="text" class="form-control"  placeholder="组织机构代码证" value="">
+								<input type="text" class="form-control"  placeholder="组织机构代码证" ng-model="seller.orgNumber">
 							</div>
-							
+
 							<div class="col-md-2 title">法定代表人</div>
 							<div class="col-md-10 data">
-								<input type="text" class="form-control"   placeholder="法定代表人" value="">
+								<input type="text" class="form-control"   placeholder="法定代表人" ng-model="seller.legalPerson">
 							</div>
-							
+
 							<div class="col-md-2 title">法定代表人身份证号</div>
 							<div class="col-md-10 data">
-								<input type="text" class="form-control"   placeholder="法定代表人身份证号" value="">
+								<input type="text" class="form-control"   placeholder="法定代表人身份证号" ng-model="seller.legalPersonCardId">
 							</div>
 
 							<div class="col-md-2 title">开户行名称</div>
 							<div class="col-md-10 data">
-								<input type="text" class="form-control" placeholder="开户行名称" value="">
+								<input type="text" class="form-control" placeholder="开户行名称" ng-model="seller.bankName">
 							</div>
-							
+
 							<div class="col-md-2 title">开户行支行</div>
 							<div class="col-md-10 data">
-								<input type="text" class="form-control"   placeholder="开户行支行" value="">
+								<input type="text" class="form-control"   placeholder="开户行支行" ng-model="seller.bankUser">
 							</div>
 
 							<div class="col-md-2 title">银行账号</div>
 							<div class="col-md-10 data">
-								<input type="text" class="form-control"   placeholder="银行账号" value="">
+								<input type="text" class="form-control"   placeholder="银行账号" ng-model="seller.brief">
 							</div>
 							
 						</div>
@@ -127,10 +136,9 @@
 			
 		   </div>
 		  <div class="btn-toolbar list-toolbar">
-			  <button class="btn btn-primary" ><i class="fa fa-save"></i>保存</button>
+			  <button class="btn btn-primary" ng-click="saveOrUpdate(seller);"><i class="fa fa-save" ></i>保存</button>
 			  <a  data-toggle="modal" class="btn btn-danger">提交</a>
 		  </div>
-	
 	</section>
 	<!-- 正文区域 /-->
 </body>

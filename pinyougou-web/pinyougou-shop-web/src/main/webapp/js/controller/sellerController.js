@@ -3,16 +3,21 @@ app.controller('sellerController', function($scope, $controller, baseService){
 
     /** 指定继承baseController */
     $controller('baseController',{$scope:$scope});
-
+    /** 初始化 */
+    $scope.find = function () {
+        baseService.sendGet("/seller/findOne").then(function (response) {
+            $scope.seller = response.data;
+        });
+    };
     /** 添加或修改 */
-    $scope.saveOrUpdate = function(){
+    $scope.saveOrUpdate = function(seller){
 
         /** 发送post请求 */
-        baseService.sendPost("/seller/save", $scope.seller)
+        baseService.sendPost("/seller/update", $scope.seller)
             .then(function(response){
                 if (response.data){
                     /** 跳转到登录页面 */
-                    location.href = "/shoplogin.html";
+                    alert("修改成功");
                 }else{
                     alert("操作失败！");
                 }
