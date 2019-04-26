@@ -23,7 +23,7 @@ app.controller('sellerController', function($scope, $controller, baseService){
                 }
             });
     };
-
+//商家查询原密码
 $scope.findOldPassword=function () {
     /** 发送post请求 */
     baseService.sendPost("/seller/findOldPassword?oldPassword="+$scope.oldPassword)
@@ -34,6 +34,7 @@ $scope.findOldPassword=function () {
         });
 
 };
+//商家修改密码
 $scope.updatePassword=function () {
     if ($scope.newPassword == $scope.rePassword){
         /** 发送post请求 */
@@ -49,28 +50,6 @@ $scope.updatePassword=function () {
         $scope.rePassword="";
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /** 查询条件对象 */

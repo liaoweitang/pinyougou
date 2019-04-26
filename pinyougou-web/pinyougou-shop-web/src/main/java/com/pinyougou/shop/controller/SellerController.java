@@ -63,7 +63,7 @@ public class SellerController {
         }
         return false;
     }
-
+   //商家查询原密码
     @PostMapping("/findOldPassword")
     public boolean findOldPassword(String oldPassword) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -78,6 +78,7 @@ public class SellerController {
         boolean matches = encoder.matches(oldPassword,password);
         return matches;
     }
+    //商家修改密码
     @PostMapping("/updatePassword")
     public boolean updatePassword(String newPassword) {
         try {
