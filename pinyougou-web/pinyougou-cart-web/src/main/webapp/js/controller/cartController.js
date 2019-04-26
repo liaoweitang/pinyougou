@@ -29,6 +29,7 @@ app.controller('cartController', function ($scope, $controller, baseService) {
             $scope.cartList.splice(idx, 1);
         }
         $scope.sumTotalFee($scope.cartList);
+
     };
 
     /** 定义方法，计算购买商品的总金额 */
@@ -55,24 +56,23 @@ app.controller('cartController', function ($scope, $controller, baseService) {
             + itemId + "&num=" + num).then(function(response){
             // 获取响应数据
             if (response.data){
-                $scope.searchJsonByKey($scope.cartList,cart);
                 // 重新查询购物车
                 $scope.findCart();
+               // $scope.searchJsonByKey($scope.cartList,num,cart);
             }
         });
     };
 
     /** 从json数组中根据key查询指定的json对象 */
-    $scope.searchJsonByKey = function(cartList,value){
+    $scope.searchJsonByKey = function(itemId){
+        alert(itemId);
         /** 迭代json数组 */
-        for(var i = 0; i < cartList.length; i++){
-            var cart = cartList[i];
+        for(var i = 0; i < $scope.cartList.length; i++){
+            var cart = $scope.cartList[i];
             var orderItems = cart.orderItems;
             for (var j = 0;j < orderItems.length;j++) {
-                if(orderItems[i].itemId == value.orderItems.itemId){
-                    var idx = $scope.cartList.indexOf(cart);
-                    $scope.cartList.splice(idx, 1);
-                    $scope.cartList.push(value);
+                if(orderItems[j].itemId == itemId){
+                    return;
                 }
             }
         }

@@ -1,5 +1,6 @@
 /** 定义控制器层 */
-app.controller('userController', function($scope, $timeout, baseService){
+app.controller('userController', function($scope, $timeout, baseService,$controller){
+
 
     // 定义user对象
     $scope.user = {};
@@ -25,8 +26,6 @@ app.controller('userController', function($scope, $timeout, baseService){
             alert("两次密码不一致！");
         }
     };
-
-
 
 
     // 发送短信验证码
@@ -73,5 +72,6 @@ app.controller('userController', function($scope, $timeout, baseService){
         }
 
     };
+
 
 });

@@ -1,23 +1,26 @@
 package com.pinyougou.order.service.impl;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSONArray;
+import com.github.pagehelper.ISelect;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.pinyougou.cart.Cart;
+import com.pinyougou.common.pojo.PageResult;
 import com.pinyougou.common.util.IdWorker;
-import com.pinyougou.mapper.OrderItemMapper;
-import com.pinyougou.mapper.OrderMapper;
-import com.pinyougou.mapper.PayLogMapper;
-import com.pinyougou.pojo.Order;
-import com.pinyougou.pojo.OrderItem;
-import com.pinyougou.pojo.PayLog;
+import com.pinyougou.mapper.*;
+import com.pinyougou.pojo.*;
+import com.pinyougou.service.GoodsService;
 import com.pinyougou.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 订单服务接口实现类
@@ -40,13 +43,17 @@ public class OrderServiceImpl implements OrderService {
     private IdWorker idWorker;
     @Autowired
     private PayLogMapper payLogMapper;
+    @Autowired
+    private ItemMapper itemMapper;
+    @Autowired
+    private SellerMapper sellerMapper;
 
     @Override
     public void save(Order order) {
-        try{
+        try {
 
             // 获取该用户的购物车
-            List<Cart> cartList = (List<Cart>)redisTemplate
+            List<Cart> cartList = (List<Cart>) redisTemplate
                     .boundValueOps("cart_" + order.getUserId()).get();
 
             // 定义支付的总金额
@@ -113,14 +120,14 @@ public class OrderServiceImpl implements OrderService {
             }
 
             // 生成支付日志(多个订单生成一次支付)
-            if ("1".equals(order.getPaymentType())){ // 在线支付
+            if ("1".equals(order.getPaymentType())) { // 在线支付
                 PayLog payLog = new PayLog();
                 // 交易订单号
                 payLog.setOutTradeNo(String.valueOf(idWorker.nextId()));
                 // 创建时间
                 payLog.setCreateTime(new Date());
                 // 支付总金额
-                payLog.setTotalFee((long)(totalMoney * 100));
+                payLog.setTotalFee((long) (totalMoney * 100));
                 // 支付用户
                 payLog.setUserId(order.getUserId());
                 // 交易状态: 未支付
@@ -138,11 +145,10 @@ public class OrderServiceImpl implements OrderService {
             }
 
 
-
             // 删除Redis中购物车数据
             redisTemplate.delete("cart_" + order.getUserId());
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
@@ -177,18 +183,22 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
-    /** 从Redis数据库中获取支付日志 */
-    public PayLog findPayLogFromRedis(String userId){
-        try{
-              return (PayLog) redisTemplate.boundValueOps("payLog_" + userId).get();
-        }catch (Exception ex){
+    /**
+     * 从Redis数据库中获取支付日志
+     */
+    public PayLog findPayLogFromRedis(String userId) {
+        try {
+            return (PayLog) redisTemplate.boundValueOps("payLog_" + userId).get();
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    /** 支付成功，修改支付日志的状态、订单的状态 */
-    public void updatePayStatus(String outTradeNo, String transactionId){
-        try{
+    /**
+     * 支付成功，修改支付日志的状态、订单的状态
+     */
+    public void updatePayStatus(String outTradeNo, String transactionId) {
+        try {
             // 1. 修改支付日志状态
             PayLog payLog = payLogMapper.selectByPrimaryKey(outTradeNo);
             // 支付时间
@@ -217,8 +227,47 @@ public class OrderServiceImpl implements OrderService {
             // 3. 从Redis数据库删除支付日志
             redisTemplate.delete("payLog_" + payLog.getUserId());
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    @Override
+    public PageResult findOrderByUserId(String userId,Integer page) {
+
+        PageInfo<Order> pageInfo = PageHelper.startPage(page, 3).doSelectPageInfo(new ISelect() {
+            @Override
+            public void doSelect() {
+                Example example = new Example(Order.class);
+                // 创建条件对象
+                Example.Criteria criteria = example.createCriteria();
+                // 添加条件
+                criteria.andEqualTo("userId", userId);
+                // 条件查询
+                List<Order> orderList = orderMapper.selectByExample(example);
+                // 遍历订单列表,根据订单id查询订单详细信息
+                for (Order order : orderList) {
+                    if (order.getPostFee() == null) {
+                        order.setPostFee("0.00");
+                    }
+                    Example example1 = new Example(OrderItem.class);
+                    // 创建条件对象
+                    Example.Criteria criteria1 = example1.createCriteria();
+                    criteria1.andEqualTo("orderId", order.getOrderId());
+                    List<OrderItem> orderItems = orderItemMapper.selectByExample(example1);
+                    // 封装规格名称
+                    for (OrderItem orderItem : orderItems) {
+                        Item item = itemMapper.selectByPrimaryKey(orderItem.getItemId());
+                        orderItem.setSpec(item.getSpec());
+                    }
+                    order.setOrderItems(orderItems);
+                    // 封装店铺名称
+                    Seller seller = sellerMapper.selectByPrimaryKey(order.getSellerId());
+                    order.setSellerId(seller.getNickName());
+                }
+            }
+        });
+
+        return new PageResult(pageInfo.getTotal(),pageInfo.getList());
     }
 }
