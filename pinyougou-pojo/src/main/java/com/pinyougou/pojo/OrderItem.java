@@ -30,6 +30,20 @@ public class OrderItem implements Serializable{
     private String picPath;
 	@Column(name="seller_id")
     private String sellerId;
+    @Transient
+    private String spec;
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getSpec() {
+        return spec;
+    }
+
+    public void setSpec(String spec) {
+        this.spec = spec;
+    }
 
     public Long getId() {
         return id;

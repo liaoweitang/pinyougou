@@ -91,7 +91,7 @@
 						<div class="cart-list" ng-repeat="orderItem in cart.orderItems">
 							<ul class="goods-list yui3-g">
 								<li class="yui3-u-1-24">
-									<input type="checkbox" checked="{{cartList}}" ng-click="updateSelection($event,cart)" />
+									<input type="checkbox" checked="{{searchJsonByKey(orderItem.itemId)?'checked':''}}" ng-click="updateSelection($event,cart)" />
 								</li>
 								<li class="yui3-u-11-24">
 									<div class="good-item">

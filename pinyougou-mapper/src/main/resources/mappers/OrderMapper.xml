@@ -4,5 +4,12 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.pinyougou.mapper.OrderMapper">
-
+	<select id="findOrderByUserId" resultType="com.pinyougou.pojo.Order">
+		SELECT o.create_time createTime,o.order_id orderId,s.name sname,oi.pic_path picPath,
+ 		oi.title title,gd.specification_items spec,g.price prePrice,oi.price price,
+ 		o.payment payment,oi.total_fee totalFee,oi.num num,o.status status,o.post_fee postFee FROM tb_order o INNER JOIN tb_order_item oi ON o.order_id = oi.order_id
+		INNER JOIN tb_goods g ON oi.goods_id=g.id INNER JOIN tb_goods_desc gd ON g.id=gd.goods_id
+		INNER JOIN tb_item i ON i..goods_id=g.id INNER JOIN tb_seller s ON s.seller_id=o.seller_id
+		WHERE o.user_id=#{userId} ORDER BY o.create_time ASC;
+	</select>
 </mapper>

@@ -3,42 +3,53 @@ app.controller('sellerController', function($scope, $controller, baseService){
 
     /** 指定继承baseController */
     $controller('baseController',{$scope:$scope});
-
+    /** 初始化 */
+    $scope.find = function () {
+        baseService.sendGet("/seller/findOne").then(function (response) {
+            $scope.seller = response.data;
+        });
+    };
     /** 添加或修改 */
-    $scope.saveOrUpdate = function(){
+    $scope.saveOrUpdate = function(seller) {
 
         /** 发送post请求 */
-        baseService.sendPost("/seller/save", $scope.seller)
-            .then(function(response){
-                if (response.data){
+        baseService.sendPost("/seller/update", $scope.seller)
+            .then(function (response) {
+                if (response.data) {
                     /** 跳转到登录页面 */
-                    location.href = "/shoplogin.html";
-                }else{
+                    alert("修改成功");
+                } else {
                     alert("操作失败！");
                 }
             });
     };
+//商家查询原密码
+$scope.findOldPassword=function () {
+    /** 发送post请求 */
+    baseService.sendPost("/seller/findOldPassword?oldPassword="+$scope.oldPassword)
+        .then(function (response) {
+            if (!response.data){
+                alert("原密码错误!")
+            }
+        });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+};
+//商家修改密码
+$scope.updatePassword=function () {
+    if ($scope.newPassword == $scope.rePassword){
+        /** 发送post请求 */
+        baseService.sendPost("/seller/updatePassword?newPassword="+$scope.newPassword)
+            .then(function (response) {
+                if (response.data){
+                    location.href="http://shop.pinyougou.com/shoplogin.html"
+                }
+            });
+    }else {
+        alert("两次新密码不一致！")
+        $scope.newPassword="";
+        $scope.rePassword="";
+    }
+};
 
 
     /** 查询条件对象 */
