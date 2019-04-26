@@ -7,10 +7,12 @@ import com.pinyougou.mapper.UserMapper;
 import com.pinyougou.pojo.User;
 import com.pinyougou.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import java.io.Serializable;
 import java.util.*;
@@ -52,6 +54,7 @@ public class UserServiceImpl implements UserService {
         } catch (Exception ex){
             throw new RuntimeException(ex);
         }
+
     }
 
     @Override
@@ -129,5 +132,53 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException(ex);
         }
     }
+
+    @Override
+    public boolean saveOrUpData(User users) {
+        try {
+            Example example = new Example(User.class);
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andEqualTo("username",users.getUsername());
+            List<User> users2 = userMapper.selectByExample(example);
+            User user = users2.get(0);
+            user.setAddress(users.getAddress());
+            user.setSex(users.getSex());
+            user.setNickName(users.getNickName());
+            user.setBirthday(users.getBirthday());
+            userMapper.updateByPrimaryKey(user);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+            return false;
+    }
+
+    @Override
+    public User findUsersByuserName(String username) {
+        Example example = new Example(User.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("username",username);
+        List<User> users2 = userMapper.selectByExample(example);
+        User user = users2.get(0);
+        return user;
+    }
+
+    @Override
+    public boolean addPic(String remoteUser,String headPic) {
+        try {
+            Example example = new Example(User.class);
+            Example.Criteria criteria = example.createCriteria();
+            criteria.andEqualTo("username",remoteUser);
+            List<User> users = userMapper.selectByExample(example);
+            users.get(0).setHeadPic(headPic);
+            userMapper.updateByPrimaryKeySelective(users.get(0));
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    ;
 
 }

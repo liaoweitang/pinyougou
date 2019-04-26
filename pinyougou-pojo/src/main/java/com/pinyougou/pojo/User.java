@@ -55,6 +55,17 @@ public class User implements Serializable{
 	@Column(name="last_login_time")
     private Date lastLoginTime;
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    @Column(name ="address" )
+    private String address;
+
     public Long getId() {
         return id;
     }
