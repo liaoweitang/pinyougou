@@ -262,8 +262,8 @@ public class OrderServiceImpl implements OrderService {
                     }
                     order.setOrderItems(orderItems);
                     // 封装店铺名称
-                    Seller seller = sellerMapper.selectByPrimaryKey(order.getSellerId());
-                    order.setSellerId(seller.getNickName());
+                    //Seller seller = sellerMapper.selectByPrimaryKey(order.getSellerId());
+                    //order.setSellerId(seller.getNickName());
                 }
             }
         });

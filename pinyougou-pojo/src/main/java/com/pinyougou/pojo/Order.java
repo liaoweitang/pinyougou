@@ -1,7 +1,9 @@
 package com.pinyougou.pojo;
 
+
+
 import com.alibaba.fastjson.annotation.JSONField;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.alibaba.fastjson.serializer.ToStringSerializer;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
