@@ -29,7 +29,8 @@ $scope.findOldPassword=function () {
     baseService.sendPost("/seller/findOldPassword?oldPassword="+$scope.oldPassword)
         .then(function (response) {
             if (!response.data){
-                alert("原密码错误!")
+                alert("原密码错误!");
+                $scope.oldPassword="";
             }
         });
 

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public void save(Address address) {
-
+   addressMapper.insertSelective(address);
     }
 
     @Override
@@ -47,7 +48,8 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Address findOne(Serializable id) {
-        return null;
+
+        return addressMapper.selectByPrimaryKey(id);
     }
 
     @Override
@@ -78,4 +80,18 @@ public class AddressServiceImpl implements AddressService {
             throw new RuntimeException(ex);
         }
     }
+
+    @Override
+    public boolean addAddress(Address add) {
+        try {
+            add.setIsDefault("0");
+            add.setCreateDate(new Date());
+            addressMapper.insertSelective(add);
+            return true;
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+    }
+
+
 }

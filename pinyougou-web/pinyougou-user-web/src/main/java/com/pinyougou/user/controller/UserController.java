@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pinyougou.pojo.*;
-import com.pinyougou.service.AreasService;
-import com.pinyougou.service.CitiesService;
-import com.pinyougou.service.ProvincesService;
-import com.pinyougou.service.UserService;
+import com.pinyougou.service.*;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +34,8 @@ public class UserController {
     private CitiesService citiesService;
     @Reference(timeout = 10000)
     private AreasService areasService;
+    @Reference(timeout = 10000)
+    private AddressService addressService;
 
     /**
      * 用户注册
@@ -97,27 +96,56 @@ public class UserController {
         return areasService.findAreasByCityId(cityId);
 
     }
+
     @PostMapping("/saveOrUpData")
-    public boolean saveOrUpData(HttpServletRequest request ,@RequestBody User users){
+    public boolean saveOrUpData(HttpServletRequest request, @RequestBody User users) {
         try {
-            String username= request.getRemoteUser();
+            String username = request.getRemoteUser();
             users.setUsername(username);
-           userService.saveOrUpData(users);
+            userService.saveOrUpData(users);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
 
-    };
+    }
+
+    ;
+
     @GetMapping("/findReload")
-    public User findReload(HttpServletRequest request){
+    public User findReload(HttpServletRequest request) {
         String username = request.getRemoteUser();
-       return userService.findUsersByuserName(username);
+        return userService.findUsersByuserName(username);
     }
+
     @GetMapping("/addPic")
-    public boolean addPic(HttpServletRequest request,String headPic){
+    public boolean addPic(HttpServletRequest request, String headPic) {
         String remoteUser = request.getRemoteUser();
-        return userService.addPic(remoteUser,headPic);
+        return userService.addPic(remoteUser, headPic);
     }
+
+    //查询用户所有地址
+    @GetMapping("/findAddress")
+    public List<Address> findAddress() {
+        // 获取登录用户名id
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        return addressService.findAddressByUser(userId);
+    }
+
+    //添加新地址
+    @PostMapping("/addAddressList")
+    public boolean addAddressList(@RequestBody Address add) {
+        try {
+            // 获取登录用户名id
+            String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+            add.setUserId(userId);
+            addressService.addAddress(add);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

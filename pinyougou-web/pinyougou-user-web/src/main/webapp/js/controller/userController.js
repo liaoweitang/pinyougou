@@ -4,6 +4,7 @@ app.controller('userController', function($scope, $timeout, baseService,$control
 
     // 定义user对象
     $scope.user = {};
+
     /** 用户注册 */
     $scope.save = function () {
 
@@ -72,6 +73,98 @@ app.controller('userController', function($scope, $timeout, baseService,$control
         }
 
     };
+    //查询用户所有地地址
+    $scope.findAddress=function () {
+        baseService.sendGet("/user/findAddress").then(function (response) {
+      $scope.dataList = response.data;
 
+        });
+    };
+
+    //省市县区查询
+    $scope.findName=function () {
+        baseService.sendGet("/user/findName").then(function (response) {
+            $scope.name=response.data.loginName;
+        });
+    };
+
+
+    $scope.findProvince = function (name) {
+        baseService.sendGet("/user/findProvincesList").then(function (response) {
+            $scope[name] = response.data;
+        })
+    };
+
+    $scope.findCityByProvinceId=function (provinceId, name) {
+        baseService.sendGet("/user/findCityList","provinceId="+provinceId).then(function (response) {
+            $scope[name]=response.data;
+        });
+    };
+
+
+    $scope.$watch('provinces.provinceId', function (newVal, oldVal) {
+        //alert("新值：" + newVal + ",旧值:" + oldVal);
+        if (newVal){ // 不是undefined、null
+            // 查询二级分类
+            $scope.findCityByProvinceId(newVal, "city");
+        }else {
+            $scope.city = [];
+        }
+    });
+
+    $scope.findAreasByCityId=function (cityId, name) {
+        baseService.sendGet("/user/findAreasList","cityId="+cityId).then(function (response) {
+            $scope[name]=response.data;
+        });
+    };
+
+
+    $scope.$watch('city.cityId', function (newVal, oldVal) {
+        //alert("新值：" + newVal + ",旧值:" + oldVal);
+        if (newVal){ // 不是undefined、null
+            // 查询二级分类
+            $scope.findAreasByCityId(newVal, "areas");
+        }else {
+            $scope.areas= [];
+        }
+    });
+
+
+$scope.add={contact:'',address:'',mobile:'',notes:'',alias:'',province:'',city:'',area:''};
+    $scope.getAddress = function (name,id) {
+        $scope.add[name] = id;
+    };
+
+    $scope.mesTip1 = "家里";
+    $scope.mesTip2 = "父母家";
+    $scope.mesTip3 = "公司";
+
+    $scope.changeAdress1 = function () {
+        $scope.add.alias = $scope.mesTip1;
+    };
+
+    $scope.changeAdress2 = function () {
+        $scope.add.alias = $scope.mesTip2;
+    };
+
+    $scope.changeAdress3 = function () {
+        $scope.add.alias = $scope.mesTip3;
+    };
+
+    //添加新地址
+    $scope.addAddressList=function () {
+        baseService.sendPost("/user/addAddressList",$scope.add).then(function (response) {
+            if (response.data){
+                alert("添加成功");
+                $scope.findAddress();
+            }
+        })
+    };
+    $scope.showAddress=function () {
+        baseService.sendGet("/user/showAddress?userId="+$scope.add.userId).then(function (response) {
+            $scope.add=JSON.parse(JSON.stringify( response.data));
+        });
+
+    };
 
 });
