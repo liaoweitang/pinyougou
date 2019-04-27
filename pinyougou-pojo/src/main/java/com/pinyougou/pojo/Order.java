@@ -1,5 +1,8 @@
 package com.pinyougou.pojo;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -13,6 +16,7 @@ public class Order implements Serializable{
 	private static final long serialVersionUID = 1240990444368827377L;
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="order_id")
+    @JSONField(serializeUsing = ToStringSerializer.class)
 	private Long orderId;
 	@Column(name="payment")
     private BigDecimal payment;
