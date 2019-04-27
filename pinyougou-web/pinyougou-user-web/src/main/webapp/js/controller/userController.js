@@ -12,15 +12,15 @@ app.controller('userController', function($scope, $timeout, baseService,$control
             // 发送异步请求
             baseService.sendPost("/user/save?code=" + $scope.code, $scope.user)
                 .then(function(response){
-                if (response.data){
-                    // 清空表单数据
-                    $scope.user = {};
-                    $scope.okPassword = "";
-                    $scope.code = "";
-                }else{
-                    alert("注册失败！");
-                }
-            });
+                    if (response.data){
+                        // 清空表单数据
+                        $scope.user = {};
+                        $scope.okPassword = "";
+                        $scope.code = "";
+                    }else{
+                        alert("注册失败！");
+                    }
+                });
 
         }else{
             alert("两次密码不一致！");
@@ -36,14 +36,14 @@ app.controller('userController', function($scope, $timeout, baseService,$control
             // 发送异步请求
             baseService.sendGet("/user/sendSmsCode?phone=" + $scope.user.phone)
                 .then(function(response){
-                if (response.data){
-                    // 调用倒计时方法
-                    $scope.downcount(90);
+                    if (response.data){
+                        // 调用倒计时方法
+                        $scope.downcount(90);
 
-                }else{
-                    alert("发送失败！");
-                }
-            });
+                    }else{
+                        alert("发送失败！");
+                    }
+                });
         }else {
             alert("手机号码格式不正确！")
         }

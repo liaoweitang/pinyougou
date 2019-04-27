@@ -1,6 +1,8 @@
 package com.pinyougou.service;
 
 import com.pinyougou.pojo.Areas;
+import com.pinyougou.pojo.Cities;
+
 import java.util.List;
 import java.io.Serializable;
 /**
@@ -31,4 +33,5 @@ public interface AreasService {
 	/** 多条件分页查询 */
 	List<Areas> findByPage(Areas areas, int page, int rows);
 
+    List<Areas> findAreasByCityId(String cityId);
 }
