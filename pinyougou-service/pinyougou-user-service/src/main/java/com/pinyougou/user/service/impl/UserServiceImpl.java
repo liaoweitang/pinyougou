@@ -3,7 +3,9 @@ package com.pinyougou.user.service.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
 import com.pinyougou.common.util.HttpClientUtils;
+import com.pinyougou.mapper.AddressMapper;
 import com.pinyougou.mapper.UserMapper;
+import com.pinyougou.pojo.Address;
 import com.pinyougou.pojo.User;
 import com.pinyougou.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -39,7 +41,8 @@ public class UserServiceImpl implements UserService {
     private String templateCode;
     @Autowired
     private RedisTemplate redisTemplate;
-
+    @Autowired
+    private AddressMapper addressMapper;
     @Override
     public void save(User user) {
         try{
@@ -178,7 +181,5 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
-
-    ;
 
 }

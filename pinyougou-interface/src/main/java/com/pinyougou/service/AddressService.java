@@ -33,5 +33,8 @@ public interface AddressService {
 
 	/** 根据登录用户名获取收件地址列表 */
     List<Address> findAddressByUser(String userId);
+	/** 根据登录用户名添加收件地址列表 */
+  	boolean addAddress(Address add);
+
 
 }
